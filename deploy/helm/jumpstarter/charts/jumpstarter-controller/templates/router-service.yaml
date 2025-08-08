@@ -5,7 +5,7 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/name: jumpstarter-controller
   name: jumpstarter-router-grpc
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
 spec:
   {{ if .Values.grpc.nodeport.enabled }}
   type: NodePort

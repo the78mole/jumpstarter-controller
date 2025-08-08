@@ -1,6 +1,13 @@
 
 namespace: ""
 
+# Templateable configurations - these can contain Go template expressions
+# Examples:
+#   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.environment }}"
+# Usage examples:
+#   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.global.environment | default \"prod\" }}"
+templateableNamespace: ""
+
 grpc:
   hostname: ""
   routerHostname: ""
@@ -10,15 +17,34 @@ grpc:
   endpoint: ""
   routerEndpoint: ""
 
+  # Templateable GRPC configurations - these can contain Go template expressions
+  # Examples:
+  #   templateableHostname: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
+  #   templateableRouterHostname: "router-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
+  #   templateableEndpoint: "{{ .Values.grpc.templateableHostname }}:{{ .Values.grpc.tls.port }}"
+  templateableHostname: ""
+  templateableRouterHostname: ""
+  templateableEndpoint: ""
+  templateableRouterEndpoint: ""
 
   tls:
     enabled: false
     secret: ""
+    
+    # Templateable TLS configurations
+    # Examples:
+    #   templateableSecret: "grpc-tls-{{ .Values.environment }}"
+    templateableSecret: ""
 
   # enabling ingress route
   ingress:
     enabled: false
     class: ""
+    
+    # Templateable ingress configurations
+    # Examples:
+    #   templateableClass: "nginx-{{ .Values.environment }}"
+    templateableClass: ""
 
   # enabling openshift route
   route:
@@ -33,3 +59,10 @@ grpc:
 image: quay.io/jumpstarter-dev/jumpstarter-controller
 tag: ""
 imagePullPolicy: IfNotPresent
+
+# Templateable image configurations - these can contain Go template expressions
+# Examples:
+#   templateableImage: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
+#   templateableTag: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
+templateableImage: ""
+templateableTag: ""

@@ -79,6 +79,9 @@ class Ingress(BaseModel):
     class_: Optional[str] = Field(
         None, alias="class", description="IngressClass to use for the gRPC endpoint"
     )
+    templateableClass: Optional[str] = Field(
+        None, description="Templateable ingress class string that can contain Go template expressions"
+    )
 
 
 class Route(BaseModel):
@@ -213,6 +216,9 @@ class Tls(BaseModel):
 
     enabled: Optional[bool] = None
     secret: Optional[str] = None
+    templateableSecret: Optional[str] = Field(
+        None, description="Templateable TLS secret string that can contain Go template expressions"
+    )
     controllerCertSecret: Optional[str] = Field(
         None,
         description="Secret containing the TLS certificate/key for the gRPC controller endpoint",
@@ -220,6 +226,12 @@ class Tls(BaseModel):
     routerCertSecret: Optional[str] = Field(
         None,
         description="Secret containing the TLS certificate/key for the gRPC router endpoints",
+    )
+    templateableControllerCertSecret: Optional[str] = Field(
+        None, description="Templateable controller cert secret string that can contain Go template expressions"
+    )
+    templateableRouterCertSecret: Optional[str] = Field(
+        None, description="Templateable router cert secret string that can contain Go template expressions"
     )
     port: Optional[Port] = Field(
         None,
@@ -237,6 +249,12 @@ class Grpc1(BaseModel):
     routerHostname: Optional[str] = Field(
         None, description="Hostname for the controller to use for the controller gRPC"
     )
+    templateableHostname: Optional[str] = Field(
+        None, description="Templateable hostname string that can contain Go template expressions"
+    )
+    templateableRouterHostname: Optional[str] = Field(
+        None, description="Templateable router hostname string that can contain Go template expressions"
+    )
     endpoint: Optional[str] = Field(
         None,
         description="The endpoints are passed down to the services to know where to announce the endpoints to the clients",
@@ -244,6 +262,12 @@ class Grpc1(BaseModel):
     routerEndpoint: Optional[str] = Field(
         None,
         description="The endpoints are passed down to the services to know where to announce the endpoints to the clients",
+    )
+    templateableEndpoint: Optional[str] = Field(
+        None, description="Templateable endpoint string that can contain Go template expressions"
+    )
+    templateableRouterEndpoint: Optional[str] = Field(
+        None, description="Templateable router endpoint string that can contain Go template expressions"
     )
     ingress: Optional[Ingress] = None
     route: Optional[Route] = None
@@ -264,8 +288,17 @@ class Model(BaseModel):
         None,
         description="Namespace where the controller will be deployed, defaults to global.namespace",
     )
+    templateableNamespace: Optional[str] = Field(
+        None, description="Templateable namespace string that can contain Go template expressions"
+    )
     image: str = Field(..., description="Image for the controller")
     tag: Optional[str] = Field(None, description="Image tag for the controller")
+    templateableImage: Optional[str] = Field(
+        None, description="Templateable image string that can contain Go template expressions"
+    )
+    templateableTag: Optional[str] = Field(
+        None, description="Templateable tag string that can contain Go template expressions"
+    )
     imagePullPolicy: str = Field(
         ..., description="Image pull policy for the controller"
     )

@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: jumpstarter-router
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
   labels:
     control-plane: controller-router
     app.kubernetes.io/name: jumpstarter-controller
@@ -56,13 +56,7 @@ spec:
           - /router
         env:
         - name: GRPC_ROUTER_ENDPOINT
-          {{ if .Values.grpc.routerEndpoint }}
-          value: {{ .Values.grpc.routerEndpoint }}
-          {{ else if .Values.routerHostname }}
-          value: {{ .Values.routerHostname }}:{{ .Values.grpc.tls.port }}
-          {{ else }}
-          value: router.{{ .Values.global.baseDomain }}:{{ .Values.grpc.tls.port }}
-          {{ end }}
+          value: {{ include "jumpstarter.grpc.routerEndpoint" . }}
         - name: ROUTER_KEY
           valueFrom:
             secretKeyRef:
@@ -73,7 +67,7 @@ spec:
             fieldRef:
               fieldPath: metadata.namespace
 
-        image: {{ .Values.image }}:{{ default .Chart.AppVersion .Values.tag }}
+        image: {{ include "jumpstarter.image" . }}:{{ include "jumpstarter.tag" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
         name: router
         securityContext:

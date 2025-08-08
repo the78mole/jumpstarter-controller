@@ -40,6 +40,15 @@ class Global(BaseModel):
     storageClassNameRWM: Optional[str] = Field(
         None, description="Storage class name for the PVCs"
     )
+    templateableBaseDomain: Optional[str] = Field(
+        None, description="Templateable base domain string that can contain Go template expressions"
+    )
+    templateableNamespace: Optional[str] = Field(
+        None, description="Templateable namespace string that can contain Go template expressions"
+    )
+    environment: Optional[str] = Field(
+        None, description="Environment name for use in templateable values"
+    )
     metrics: Optional[Metrics] = None
 
 
