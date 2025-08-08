@@ -1,12 +1,9 @@
 
 namespace: ""
 
-# Templateable configurations - these can contain Go template expressions
-# Examples:
-#   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.environment }}"
-# Usage examples:
-#   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.global.environment | default \"prod\" }}"
-templateableNamespace: ""
+## @param namespaceOverride String to fully override common.names.namespace
+##
+namespaceOverride: ""
 
 grpc:
   hostname: ""
@@ -17,34 +14,42 @@ grpc:
   endpoint: ""
   routerEndpoint: ""
 
-  # Templateable GRPC configurations - these can contain Go template expressions
-  # Examples:
-  #   templateableHostname: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
-  #   templateableRouterHostname: "router-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
-  #   templateableEndpoint: "{{ .Values.grpc.templateableHostname }}:{{ .Values.grpc.tls.port }}"
-  templateableHostname: ""
-  templateableRouterHostname: ""
-  templateableEndpoint: ""
-  templateableRouterEndpoint: ""
+  ## @param grpc.hostnameOverride String to override grpc hostname (value evaluated as a template)
+  ## Examples:
+  ##   hostnameOverride: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
+  ##   hostnameOverride: "{{ .Values.environment }}-grpc.{{ .Values.global.baseDomain }}"
+  ##
+  hostnameOverride: ""
+  ## @param grpc.routerHostnameOverride String to override router hostname (value evaluated as a template)
+  ##
+  routerHostnameOverride: ""
+  ## @param grpc.endpointOverride String to override grpc endpoint (value evaluated as a template)
+  ##
+  endpointOverride: ""
+  ## @param grpc.routerEndpointOverride String to override router endpoint (value evaluated as a template)
+  ##
+  routerEndpointOverride: ""
 
   tls:
     enabled: false
     secret: ""
     
-    # Templateable TLS configurations
-    # Examples:
-    #   templateableSecret: "grpc-tls-{{ .Values.environment }}"
-    templateableSecret: ""
+    ## @param grpc.tls.secretOverride String to override TLS secret name (value evaluated as a template)
+    ## Examples:
+    ##   secretOverride: "grpc-tls-{{ .Values.environment }}"
+    ##
+    secretOverride: ""
 
   # enabling ingress route
   ingress:
     enabled: false
     class: ""
     
-    # Templateable ingress configurations
-    # Examples:
-    #   templateableClass: "nginx-{{ .Values.environment }}"
-    templateableClass: ""
+    ## @param grpc.ingress.classOverride String to override ingress class (value evaluated as a template)
+    ## Examples:
+    ##   classOverride: "nginx-{{ .Values.environment }}"
+    ##
+    classOverride: ""
 
   # enabling openshift route
   route:
@@ -60,9 +65,97 @@ image: quay.io/jumpstarter-dev/jumpstarter-controller
 tag: ""
 imagePullPolicy: IfNotPresent
 
-# Templateable image configurations - these can contain Go template expressions
-# Examples:
-#   templateableImage: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
-#   templateableTag: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
-templateableImage: ""
-templateableTag: ""
+image: quay.io/jumpstarter-dev/jumpstarter-controller
+tag: ""
+imagePullPolicy: IfNotPresent
+
+## @param imageOverride String to override image name (value evaluated as a template)
+## Examples:
+##   imageOverride: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
+##
+imageOverride: ""
+## @param tagOverride String to override image tag (value evaluated as a template)
+## Examples:
+##   tagOverride: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
+##
+tagOverride: ""
+
+## @param commonLabels Add labels to all the deployed resources
+##
+commonLabels: {}
+## @param commonAnnotations Add annotations to all the deployed resources (value evaluated as a template)
+##
+commonAnnotations: {}
+
+## @param extraEnvVars Array with extra environment variables to add to jumpstarter-controller containers
+## e.g:
+## extraEnvVars:
+##   - name: FOO
+##     value: "BAR"
+##
+extraEnvVars: []
+## @param extraEnvVarsCM Name of existing ConfigMap containing extra env vars for jumpstarter-controller containers
+##
+extraEnvVarsCM: ""
+## @param extraEnvVarsSecret Name of existing Secret containing extra env vars for jumpstarter-controller containers
+##
+extraEnvVarsSecret: ""
+
+## @param sidecars Add additional sidecar containers to the jumpstarter-controller pod(s)
+## e.g:
+## sidecars:
+##   - name: your-image-name
+##     image: your-image
+##     imagePullPolicy: Always
+##     ports:
+##       - name: portname
+##         containerPort: 1234
+##
+sidecars: []
+
+## @param extraVolumes Optionally specify extra list of additional volumes for the jumpstarter-controller pod(s)
+##
+extraVolumes: []
+## @param extraVolumeMounts Optionally specify extra list of additional volumeMounts for the jumpstarter-controller container(s)
+##
+extraVolumeMounts: []
+
+## @param podLabels Extra labels for jumpstarter-controller pods
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/
+##
+podLabels: {}
+## @param podAnnotations Annotations for jumpstarter-controller pods (value evaluated as a template)
+## ref: https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/
+##
+podAnnotations: {}
+
+## Router-specific configurations
+##
+router:
+  ## @param router.extraEnvVars Array with extra environment variables to add to router containers
+  ##
+  extraEnvVars: []
+  ## @param router.extraEnvVarsCM Name of existing ConfigMap containing extra env vars for router containers
+  ##
+  extraEnvVarsCM: ""
+  ## @param router.extraEnvVarsSecret Name of existing Secret containing extra env vars for router containers
+  ##
+  extraEnvVarsSecret: ""
+  
+  ## @param router.sidecars Add additional sidecar containers to the router pod(s)
+  ##
+  sidecars: []
+  
+  ## @param router.extraVolumes Optionally specify extra list of additional volumes for the router pod(s)
+  ##
+  extraVolumes: []
+  ## @param router.extraVolumeMounts Optionally specify extra list of additional volumeMounts for the router container(s)
+  ##
+  extraVolumeMounts: []
+  
+  ## @param router.podLabels Extra labels for router pods
+  ##
+  podLabels: {}
+  ## @param router.podAnnotations Annotations for router pods (value evaluated as a template)
+  ##
+  podAnnotations: {}

@@ -6,12 +6,19 @@ metadata:
   labels:
     control-plane: controller-router
     app.kubernetes.io/name: jumpstarter-controller
-  {{ if .Values.global.timestamp }}
+{{- with .Values.commonLabels }}
+{{- toYaml . | nindent 4 }}
+{{- end }}
+{{- if .Values.global.timestamp }}
     deployment.timestamp: {{ .Values.global.timestamp | quote }}
-  {{ end }}
+{{- end }}
   annotations:
     configmap-sha256: {{ include (print $.Template.BasePath "/cms/controller-cm.yaml") . | sha256sum }}
     argocd.argoproj.io/sync-wave: "1"
+{{- $annotations := include "jumpstarter.annotations" . }}
+{{- if $annotations }}
+{{- $annotations | nindent 4 }}
+{{- end }}
 spec:
   selector:
     matchLabels:
@@ -21,11 +28,21 @@ spec:
     metadata:
       annotations:
         kubectl.kubernetes.io/default-container: router
+{{- $podAnnotations := include "jumpstarter.router.podAnnotations" . }}
+{{- if $podAnnotations }}
+{{- $podAnnotations | nindent 8 }}
+{{- end }}
       labels:
         control-plane: controller-router
-      {{ if .Values.global.timestamp }}
+{{- with .Values.commonLabels }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- with .Values.router.podLabels }}
+{{- toYaml . | nindent 8 }}
+{{- end }}
+{{- if .Values.global.timestamp }}
         deployment.timestamp: {{ .Values.global.timestamp | quote }}
-      {{ end }}
+{{- end }}
     spec:
       # TODO(user): Uncomment the following code to configure the nodeAffinity expression
       # according to the platforms which are supported by your solution.
@@ -66,6 +83,29 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.namespace
+        {{- if .Values.router.extraEnvVarsCM }}
+        - name: EXTRA_ENVVARS_CM
+          valueFrom:
+            configMapKeyRef:
+              name: {{ .Values.router.extraEnvVarsCM }}
+        {{- end }}
+        {{- if .Values.router.extraEnvVarsSecret }}
+        - name: EXTRA_ENVVARS_SECRET  
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.router.extraEnvVarsSecret }}
+        {{- end }}
+        {{- if .Values.router.extraEnvVars }}
+        {{- range .Values.router.extraEnvVars }}
+        - name: {{ .name }}
+          {{- if .value }}
+          value: {{ tpl .value $ | quote }}
+          {{- else if .valueFrom }}
+          valueFrom:
+          {{- toYaml .valueFrom | nindent 12 }}
+          {{- end }}
+        {{- end }}
+        {{- end }}
 
         image: {{ include "jumpstarter.image" . }}:{{ include "jumpstarter.tag" . }}
         imagePullPolicy: {{ .Values.imagePullPolicy }}
@@ -82,5 +122,16 @@ spec:
           requests:
             cpu: 1000m
             memory: 256Mi
+        {{- if .Values.router.extraVolumeMounts }}
+        volumeMounts:
+        {{- toYaml .Values.router.extraVolumeMounts | nindent 8 }}
+        {{- end }}
+      {{- if .Values.router.sidecars }}
+      {{- toYaml .Values.router.sidecars | nindent 6 }}
+      {{- end }}
       serviceAccountName: controller-manager
       terminationGracePeriodSeconds: 10
+      {{- if .Values.router.extraVolumes }}
+      volumes:
+      {{- toYaml .Values.router.extraVolumes | nindent 6 }}
+      {{- end }}

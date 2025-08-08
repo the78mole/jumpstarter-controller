@@ -19,16 +19,16 @@ global:
       enabled: false
   timestamp: "" # can be used to timestamp deployments and make them reload
   
-  # Templateable strings - these can contain Go template expressions that will be evaluated
-  # Examples:
-  #   templateableBaseDomain: "{{ .Values.global.baseDomain }}"
-  #   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.environment }}"
-  #   templateableTimestamp: "{{ now | date \"2006-01-02T15:04:05Z\" }}"
-  # Usage examples:
-  #   templateableBaseDomain: "{{ .Values.global.baseDomain }}.{{ .Values.global.environment }}"
-  #   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.global.environment | default \"prod\" }}"
-  templateableBaseDomain: ""
-  templateableNamespace: ""
+  ## @param global.baseDomainOverride Override base domain (value evaluated as a template)
+  ## Examples:
+  ##   baseDomainOverride: "{{ .Values.global.baseDomain }}.{{ .Values.environment }}"
+  ##
+  baseDomainOverride: ""
+  ## @param global.namespaceOverride Override namespace (value evaluated as a template)  
+  ## Examples:
+  ##   namespaceOverride: "{{ .Release.Namespace }}-{{ .Values.environment }}"
+  ##
+  namespaceOverride: ""
 
 ## @section Jumpstarter Controller parameters
 ## @descriptionStart This section contains parameters for the Jumpstarter Controller.
@@ -82,18 +82,21 @@ jumpstarter-controller:
 
     namespace: ""
     
-    # Templateable configurations - these can contain Go template expressions
-    # Examples:
-    #   templateableImage: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
-    #   templateableTag: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
-    #   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.environment }}"
-    # Usage examples:
-    #   templateableImage: "my-registry.com/jumpstarter-controller"
-    #   templateableTag: "{{ .Chart.AppVersion }}-{{ .Values.global.environment | default \"prod\" }}"
-    #   templateableNamespace: "{{ .Release.Namespace }}-{{ .Values.global.environment }}"
-    templateableImage: ""
-    templateableTag: ""
-    templateableNamespace: ""
+    ## @param jumpstarter-controller.imageOverride Override image (value evaluated as a template)
+    ## Examples:
+    ##   imageOverride: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
+    ##
+    imageOverride: ""
+    ## @param jumpstarter-controller.tagOverride Override tag (value evaluated as a template)
+    ## Examples:
+    ##   tagOverride: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
+    ##
+    tagOverride: ""
+    ## @param jumpstarter-controller.namespaceOverride Override namespace (value evaluated as a template)
+    ## Examples:
+    ##   namespaceOverride: "{{ .Release.Namespace }}-{{ .Values.environment }}"
+    ##
+    namespaceOverride: ""
 
     config:
       grpc:
@@ -130,20 +133,20 @@ jumpstarter-controller:
       endpoint: ""
       routerEndpoint: ""
       
-      # Templateable GRPC configurations - these can contain Go template expressions
-      # Examples:
-      #   templateableHostname: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
-      #   templateableRouterHostname: "router-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
-      #   templateableEndpoint: "{{ .Values.jumpstarter-controller.grpc.templateableHostname }}:{{ .Values.jumpstarter-controller.grpc.tls.port }}"
-      # Usage examples:
-      #   templateableHostname: "grpc-{{ .Values.global.environment | default \"prod\" }}.{{ .Values.global.baseDomain }}"
-      #   templateableRouterHostname: "router-{{ .Values.global.environment | default \"prod\" }}.{{ .Values.global.baseDomain }}"
-      #   templateableEndpoint: "grpc-{{ .Values.global.environment }}.{{ .Values.global.baseDomain }}:443"
-      #   templateableRouterEndpoint: "router-{{ .Values.global.environment }}.{{ .Values.global.baseDomain }}:443"
-      templateableHostname: ""
-      templateableRouterHostname: ""
-      templateableEndpoint: ""
-      templateableRouterEndpoint: ""
+      ## @param jumpstarter-controller.grpc.hostnameOverride Override grpc hostname (value evaluated as a template)
+      ## Examples:
+      ##   hostnameOverride: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
+      ##
+      hostnameOverride: ""
+      ## @param jumpstarter-controller.grpc.routerHostnameOverride Override router hostname (value evaluated as a template)
+      ##
+      routerHostnameOverride: ""
+      ## @param jumpstarter-controller.grpc.endpointOverride Override grpc endpoint (value evaluated as a template)
+      ##
+      endpointOverride: ""
+      ## @param jumpstarter-controller.grpc.routerEndpointOverride Override router endpoint (value evaluated as a template)
+      ##
+      routerEndpointOverride: ""
 
       tls:
         mode: "passthrough"
@@ -151,14 +154,13 @@ jumpstarter-controller:
         routerCertSecret: ""
         controllerCertSecret: ""
         
-        # Templateable TLS configurations
-        # Examples:
-        #   templateableRouterCertSecret: "router-tls-{{ .Values.environment }}"
-        #   templateableControllerCertSecret: "controller-tls-{{ .Values.environment }}"
-        # Usage examples:
-        #   templateableRouterCertSecret: "router-tls-{{ .Values.global.environment | default \"prod\" }}"
-        #   templateableControllerCertSecret: "controller-tls-{{ .Values.global.environment | default \"prod\" }}"
-        templateableRouterCertSecret: ""
-        templateableControllerCertSecret: ""
+        ## @param jumpstarter-controller.grpc.tls.routerCertSecretOverride Override router cert secret (value evaluated as a template)
+        ## Examples:
+        ##   routerCertSecretOverride: "router-tls-{{ .Values.environment }}"
+        ##
+        routerCertSecretOverride: ""
+        ## @param jumpstarter-controller.grpc.tls.controllerCertSecretOverride Override controller cert secret (value evaluated as a template)
+        ##
+        controllerCertSecretOverride: ""
 
       mode: "route" # route or ingress

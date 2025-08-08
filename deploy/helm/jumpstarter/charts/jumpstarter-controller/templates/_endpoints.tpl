@@ -14,11 +14,11 @@ Usage: {{ include "jumpstarter.templateable" (dict "templateableValue" .Values.t
 {{- end -}}
 
 {{/*
-Get the effective namespace - processes templateable namespace if provided
+Get the effective namespace - processes namespaceOverride if provided
 */}}
 {{- define "jumpstarter.namespace" -}}
-{{- if .Values.templateableNamespace -}}
-{{- tpl .Values.templateableNamespace . -}}
+{{- if .Values.namespaceOverride -}}
+{{- tpl .Values.namespaceOverride . -}}
 {{- else if .Values.namespace -}}
 {{- .Values.namespace -}}
 {{- else -}}
@@ -27,22 +27,22 @@ Get the effective namespace - processes templateable namespace if provided
 {{- end -}}
 
 {{/*
-Get the effective image - processes templateable image if provided
+Get the effective image - processes imageOverride if provided
 */}}
 {{- define "jumpstarter.image" -}}
-{{- if .Values.templateableImage -}}
-{{- tpl .Values.templateableImage . -}}
+{{- if .Values.imageOverride -}}
+{{- tpl .Values.imageOverride . -}}
 {{- else -}}
 {{- .Values.image -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Get the effective tag - processes templateable tag if provided
+Get the effective tag - processes tagOverride if provided
 */}}
 {{- define "jumpstarter.tag" -}}
-{{- if .Values.templateableTag -}}
-{{- tpl .Values.templateableTag . -}}
+{{- if .Values.tagOverride -}}
+{{- tpl .Values.tagOverride . -}}
 {{- else if .Values.tag -}}
 {{- .Values.tag -}}
 {{- else -}}
@@ -51,37 +51,37 @@ Get the effective tag - processes templateable tag if provided
 {{- end -}}
 
 {{/*
-Get the effective grpc hostname - processes templateable hostname if provided
+Get the effective grpc hostname - processes hostnameOverride if provided
 */}}
 {{- define "jumpstarter.grpc.hostname" -}}
-{{- if .Values.grpc.templateableHostname -}}
-{{- tpl .Values.grpc.templateableHostname . -}}
+{{- if .Values.grpc.hostnameOverride -}}
+{{- tpl .Values.grpc.hostnameOverride . -}}
 {{- else if .Values.grpc.hostname -}}
 {{- .Values.grpc.hostname -}}
 {{- else -}}
-grpc.{{ .Values.global.baseDomain | required "grpc.hostname, grpc.templateableHostname, or global.baseDomain must be provided" }}
+grpc.{{ .Values.global.baseDomain | required "grpc.hostname, grpc.hostnameOverride, or global.baseDomain must be provided" }}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Get the effective grpc router hostname - processes templateable router hostname if provided
+Get the effective grpc router hostname - processes routerHostnameOverride if provided
 */}}
 {{- define "jumpstarter.grpc.routerHostname" -}}
-{{- if .Values.grpc.templateableRouterHostname -}}
-{{- tpl .Values.grpc.templateableRouterHostname . -}}
+{{- if .Values.grpc.routerHostnameOverride -}}
+{{- tpl .Values.grpc.routerHostnameOverride . -}}
 {{- else if .Values.grpc.routerHostname -}}
 {{- .Values.grpc.routerHostname -}}
 {{- else -}}
-router.{{ .Values.global.baseDomain | required "grpc.routerHostname, grpc.templateableRouterHostname, or global.baseDomain must be provided" }}
+router.{{ .Values.global.baseDomain | required "grpc.routerHostname, grpc.routerHostnameOverride, or global.baseDomain must be provided" }}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Get the effective grpc endpoint - processes templateable endpoint if provided
+Get the effective grpc endpoint - processes endpointOverride if provided
 */}}
 {{- define "jumpstarter.grpc.endpoint" -}}
-{{- if .Values.grpc.templateableEndpoint -}}
-{{- tpl .Values.grpc.templateableEndpoint . -}}
+{{- if .Values.grpc.endpointOverride -}}
+{{- tpl .Values.grpc.endpointOverride . -}}
 {{- else if .Values.grpc.endpoint -}}
 {{- .Values.grpc.endpoint -}}
 {{- else -}}
@@ -90,11 +90,11 @@ Get the effective grpc endpoint - processes templateable endpoint if provided
 {{- end -}}
 
 {{/*
-Get the effective grpc router endpoint - processes templateable router endpoint if provided
+Get the effective grpc router endpoint - processes routerEndpointOverride if provided
 */}}
 {{- define "jumpstarter.grpc.routerEndpoint" -}}
-{{- if .Values.grpc.templateableRouterEndpoint -}}
-{{- tpl .Values.grpc.templateableRouterEndpoint . -}}
+{{- if .Values.grpc.routerEndpointOverride -}}
+{{- tpl .Values.grpc.routerEndpointOverride . -}}
 {{- else if .Values.grpc.routerEndpoint -}}
 {{- .Values.grpc.routerEndpoint -}}
 {{- else -}}
@@ -103,23 +103,87 @@ Get the effective grpc router endpoint - processes templateable router endpoint 
 {{- end -}}
 
 {{/*
-Get the effective TLS secret - processes templateable secret if provided
+Get the effective TLS secret - processes secretOverride if provided
 */}}
 {{- define "jumpstarter.grpc.tls.secret" -}}
-{{- if .Values.grpc.tls.templateableSecret -}}
-{{- tpl .Values.grpc.tls.templateableSecret . -}}
+{{- if .Values.grpc.tls.secretOverride -}}
+{{- tpl .Values.grpc.tls.secretOverride . -}}
 {{- else -}}
 {{- .Values.grpc.tls.secret -}}
 {{- end -}}
 {{- end -}}
 
 {{/*
-Get the effective ingress class - processes templateable class if provided
+Get the effective ingress class - processes classOverride if provided
 */}}
 {{- define "jumpstarter.grpc.ingress.class" -}}
-{{- if .Values.grpc.ingress.templateableClass -}}
-{{- tpl .Values.grpc.ingress.templateableClass . -}}
+{{- if .Values.grpc.ingress.classOverride -}}
+{{- tpl .Values.grpc.ingress.classOverride . -}}
 {{- else -}}
 {{- .Values.grpc.ingress.class -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Common labels
+*/}}
+{{- define "jumpstarter.labels" -}}
+{{ include "jumpstarter.selectorLabels" . }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+{{/*
+Selector labels
+*/}}
+{{- define "jumpstarter.selectorLabels" -}}
+app.kubernetes.io/name: jumpstarter-controller
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
+
+{{/*
+Create common annotations
+*/}}
+{{- define "jumpstarter.annotations" -}}
+{{- $annotations := dict -}}
+{{- if .Values.commonAnnotations -}}
+{{- $annotations = mustMerge $annotations (tpl (toYaml .Values.commonAnnotations) . | fromYaml) -}}
+{{- end -}}
+{{- if $annotations -}}
+{{- toYaml $annotations -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create pod annotations for controller
+*/}}
+{{- define "jumpstarter.podAnnotations" -}}
+{{- $annotations := dict -}}
+{{- if .Values.commonAnnotations -}}
+{{- $annotations = mustMerge $annotations (tpl (toYaml .Values.commonAnnotations) . | fromYaml) -}}
+{{- end -}}
+{{- if .Values.podAnnotations -}}
+{{- $annotations = mustMerge $annotations (tpl (toYaml .Values.podAnnotations) . | fromYaml) -}}
+{{- end -}}
+{{- if $annotations -}}
+{{- toYaml $annotations -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Create pod annotations for router
+*/}}
+{{- define "jumpstarter.router.podAnnotations" -}}
+{{- $annotations := dict -}}
+{{- if .Values.commonAnnotations -}}
+{{- $annotations = mustMerge $annotations (tpl (toYaml .Values.commonAnnotations) . | fromYaml) -}}
+{{- end -}}
+{{- if .Values.router.podAnnotations -}}
+{{- $annotations = mustMerge $annotations (tpl (toYaml .Values.router.podAnnotations) . | fromYaml) -}}
+{{- end -}}
+{{- if $annotations -}}
+{{- toYaml $annotations -}}
 {{- end -}}
 {{- end -}}

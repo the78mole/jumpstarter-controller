@@ -71,7 +71,7 @@
           "description": "Storage class name for the PVCs",
           "title": "Storageclassnamerwm"
         },
-        "templateableBaseDomain": {
+        "baseDomainOverride": {
           "anyOf": [
             {
               "type": "string"
@@ -81,10 +81,10 @@
             }
           ],
           "default": null,
-          "description": "Templateable base domain string that can contain Go template expressions",
-          "title": "Templateablebasedomain"
+          "description": "Override base domain string that can contain Go template expressions",
+          "title": "Basedomainoverride"
         },
-        "templateableNamespace": {
+        "namespaceOverride": {
           "anyOf": [
             {
               "type": "string"
@@ -94,8 +94,8 @@
             }
           ],
           "default": null,
-          "description": "Templateable namespace string that can contain Go template expressions",
-          "title": "Templateablenamespace"
+          "description": "Override namespace string that can contain Go template expressions",
+          "title": "Namespaceoverride"
         },
         "environment": {
           "anyOf": [
