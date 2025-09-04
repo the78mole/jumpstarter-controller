@@ -746,7 +746,8 @@
     "Mode": {
       "enum": [
         "ingress",
-        "route"
+        "route",
+        "nodeport"
       ],
       "title": "Mode",
       "type": "string"
