@@ -18,6 +18,17 @@ global:
   metrics:
       enabled: false
   timestamp: "" # can be used to timestamp deployments and make them reload
+  
+  ## @param global.baseDomainOverride Override base domain (value evaluated as a template)
+  ## Examples:
+  ##   baseDomainOverride: "{{ .Values.global.baseDomain }}.{{ .Values.environment }}"
+  ##
+  baseDomainOverride: ""
+  ## @param global.namespaceOverride Override namespace (value evaluated as a template)  
+  ## Examples:
+  ##   namespaceOverride: "{{ .Release.Namespace }}-{{ .Values.environment }}"
+  ##
+  namespaceOverride: ""
 
 ## @section Jumpstarter Controller parameters
 ## @descriptionStart This section contains parameters for the Jumpstarter Controller.
@@ -70,6 +81,22 @@ jumpstarter-controller:
     imagePullPolicy: IfNotPresent
 
     namespace: ""
+    
+    ## @param jumpstarter-controller.imageOverride Override image (value evaluated as a template)
+    ## Examples:
+    ##   imageOverride: "{{ .Values.global.registry }}/{{ .Values.global.imageName }}"
+    ##
+    imageOverride: ""
+    ## @param jumpstarter-controller.tagOverride Override tag (value evaluated as a template)
+    ## Examples:
+    ##   tagOverride: "{{ .Chart.AppVersion }}-{{ .Values.global.environment }}"
+    ##
+    tagOverride: ""
+    ## @param jumpstarter-controller.namespaceOverride Override namespace (value evaluated as a template)
+    ## Examples:
+    ##   namespaceOverride: "{{ .Release.Namespace }}-{{ .Values.environment }}"
+    ##
+    namespaceOverride: ""
 
     config:
       grpc:
@@ -105,11 +132,35 @@ jumpstarter-controller:
 
       endpoint: ""
       routerEndpoint: ""
+      
+      ## @param jumpstarter-controller.grpc.hostnameOverride Override grpc hostname (value evaluated as a template)
+      ## Examples:
+      ##   hostnameOverride: "grpc-{{ .Values.environment }}.{{ .Values.global.baseDomain }}"
+      ##
+      hostnameOverride: ""
+      ## @param jumpstarter-controller.grpc.routerHostnameOverride Override router hostname (value evaluated as a template)
+      ##
+      routerHostnameOverride: ""
+      ## @param jumpstarter-controller.grpc.endpointOverride Override grpc endpoint (value evaluated as a template)
+      ##
+      endpointOverride: ""
+      ## @param jumpstarter-controller.grpc.routerEndpointOverride Override router endpoint (value evaluated as a template)
+      ##
+      routerEndpointOverride: ""
 
       tls:
         mode: "passthrough"
         port: 443
         routerCertSecret: ""
         controllerCertSecret: ""
+        
+        ## @param jumpstarter-controller.grpc.tls.routerCertSecretOverride Override router cert secret (value evaluated as a template)
+        ## Examples:
+        ##   routerCertSecretOverride: "router-tls-{{ .Values.environment }}"
+        ##
+        routerCertSecretOverride: ""
+        ## @param jumpstarter-controller.grpc.tls.controllerCertSecretOverride Override controller cert secret (value evaluated as a template)
+        ##
+        controllerCertSecretOverride: ""
 
       mode: "route" # route or ingress

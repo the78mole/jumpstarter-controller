@@ -11,17 +11,13 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     {{ end }}
   name: jumpstarter-router-ingress
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
 spec:
-  {{ if .Values.grpc.ingress.class }}
-  ingressClassName: {{ .Values.grpc.ingress.class }}
+  {{ if include "jumpstarter.grpc.ingress.class" . }}
+  ingressClassName: {{ include "jumpstarter.grpc.ingress.class" . }}
   {{ end }}
   rules:
-  {{ if .Values.grpc.routerHostname }}
-  - host: {{ .Values.grpc.routerHostname }}
-  {{ else }}
-  - host: router.{{ .Values.global.baseDomain | required "a global.baseDomain or a grpc.routerHostname must be provided"}}
-  {{ end }}
+  - host: {{ include "jumpstarter.grpc.routerHostname" . }}
     http:
       paths:
       - path: /
@@ -33,11 +29,7 @@ spec:
               number: 8083
   tls:
   - hosts:
-      {{ if .Values.grpc.routerHostname }}
-      - {{ .Values.grpc.routerHostname }}
-      {{ else }}
-      - router.{{ .Values.global.baseDomain | required "a global.baseDomain or a grpc.routerHostname must be provided" }}
-      {{ end }}
+      - {{ include "jumpstarter.grpc.routerHostname" . }}
     {{ if .Values.grpc.tls.routerCertSecret }}
     secretName: {{ .Values.grpc.tls.routerCertSecret }}
     {{ end }}

@@ -8,7 +8,7 @@ metadata:
     control-plane: controller-manager
     app.kubernetes.io/name: jumpstarter-controller
   name: controller-manager-metrics-monitor
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
 spec:
   endpoints:
     - path: /metrics
