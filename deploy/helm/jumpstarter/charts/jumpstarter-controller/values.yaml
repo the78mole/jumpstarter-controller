@@ -5,6 +5,16 @@ namespace: ""
 ##
 namespaceOverride: ""
 
+## Global configuration
+## @section Global parameters
+##
+global:
+  ## Metrics configuration
+  ## @param global.metrics.enabled Enable metrics collection
+  ##
+  metrics:
+    enabled: false
+
 grpc:
   hostname: ""
   routerHostname: ""
