@@ -9,13 +9,9 @@ metadata:
     haproxy.router.openshift.io/timeout: 2d
     haproxy.router.openshift.io/timeout-tunnel: 2d
   name: jumpstarter-router-route
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
 spec:
-  {{ if .Values.grpc.routerHostname }}
-  host: {{ .Values.grpc.routerHostname }}
-  {{ else }}
-  host: router.{{ .Values.global.baseDomain | required "a global.baseDomain or a grpc.routerHostname must be provided"}}
-  {{ end }}
+  host: {{ include "jumpstarter.grpc.routerHostname" . }}
   port:
     targetPort: 8083
   tls:

@@ -10,18 +10,22 @@ metadata:
     {{ if eq .Values.grpc.tls.mode "passthrough" }}
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
     {{ end }}
+    {{- $annotations := include "jumpstarter.annotations" . }}
+    {{- if $annotations }}
+    {{- $annotations | nindent 4 }}
+    {{- end }}
   name: jumpstarter-controller-ingress
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
+  {{- with .Values.commonLabels }}
+  labels:
+  {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
-  {{ if .Values.grpc.ingress.class }}
-  ingressClassName: {{ .Values.grpc.ingress.class }}
+  {{ if include "jumpstarter.grpc.ingress.class" . }}
+  ingressClassName: {{ include "jumpstarter.grpc.ingress.class" . }}
   {{ end }}
   rules:
-  {{ if .Values.grpc.hostname }}
-  - host: {{ .Values.grpc.hostname }}
-  {{ else }}
-  - host: grpc.{{ .Values.global.baseDomain | required "a global.baseDomain or a grpc.hostname must be provided"}}
-  {{ end }}
+  - host: {{ include "jumpstarter.grpc.hostname" . }}
     http:
       paths:
       - path: /
@@ -33,11 +37,7 @@ spec:
               number: 8082
   tls:
   - hosts:
-      {{ if .Values.grpc.hostname }}
-      - {{ .Values.grpc.hostname }}
-      {{ else }}
-      - grpc.{{ .Values.global.baseDomain | required "a global.baseDomain or a grpc.hostname must be provided"}}
-      {{ end }}
+      - {{ include "jumpstarter.grpc.hostname" . }}
     {{ if .Values.grpc.tls.controllerCertSecret }}
     secretName: {{ .Values.grpc.tls.controllerCertSecret }}
     {{ end }}

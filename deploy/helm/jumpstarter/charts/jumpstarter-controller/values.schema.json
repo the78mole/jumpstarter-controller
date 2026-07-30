@@ -322,6 +322,32 @@
           "description": "Hostname for the controller to use for the controller gRPC",
           "title": "Routerhostname"
         },
+        "hostnameOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override hostname string that can contain Go template expressions",
+          "title": "Hostnameoverride"
+        },
+        "routerHostnameOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override router hostname string that can contain Go template expressions",
+          "title": "Routerhostnameoverride"
+        },
         "endpoint": {
           "anyOf": [
             {
@@ -347,6 +373,32 @@
           "default": null,
           "description": "The endpoints are passed down to the services to know where to announce the endpoints to the clients",
           "title": "Routerendpoint"
+        },
+        "endpointOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override endpoint string that can contain Go template expressions",
+          "title": "Endpointoverride"
+        },
+        "routerEndpointOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override router endpoint string that can contain Go template expressions",
+          "title": "Routerendpointoverride"
         },
         "ingress": {
           "anyOf": [
@@ -435,6 +487,19 @@
           "default": null,
           "description": "IngressClass to use for the gRPC endpoint",
           "title": "Class"
+        },
+        "classOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override ingress class string that can contain Go template expressions",
+          "title": "Classoverride"
         }
       },
       "title": "Ingress",
@@ -854,6 +919,123 @@
       "title": "Route",
       "type": "object"
     },
+    "Router": {
+      "additionalProperties": false,
+      "properties": {
+        "extraEnvVars": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": [],
+          "description": "Array with extra environment variables to add to router containers",
+          "title": "Extraenvvars"
+        },
+        "extraEnvVarsCM": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of existing ConfigMap containing extra env vars for router containers",
+          "title": "Extraenvvarscm"
+        },
+        "extraEnvVarsSecret": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Name of existing Secret containing extra env vars for router containers",
+          "title": "Extraenvvarssecret"
+        },
+        "sidecars": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": [],
+          "description": "Add additional sidecar containers to the router pod(s)",
+          "title": "Sidecars"
+        },
+        "extraVolumes": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": [],
+          "description": "Optionally specify extra list of additional volumes for the router pod(s)",
+          "title": "Extravolumes"
+        },
+        "extraVolumeMounts": {
+          "anyOf": [
+            {
+              "items": {},
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": [],
+          "description": "Optionally specify extra list of additional volumeMounts for the router container(s)",
+          "title": "Extravolumemounts"
+        },
+        "podLabels": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": {},
+          "description": "Extra labels for router pods",
+          "title": "Podlabels"
+        },
+        "podAnnotations": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": {},
+          "description": "Annotations for router pods (value evaluated as a template)",
+          "title": "Podannotations"
+        }
+      },
+      "title": "Router",
+      "type": "object"
+    },
     "Tls": {
       "additionalProperties": false,
       "properties": {
@@ -881,6 +1063,19 @@
           "default": null,
           "title": "Secret"
         },
+        "secretOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override TLS secret string that can contain Go template expressions",
+          "title": "Secretoverride"
+        },
         "controllerCertSecret": {
           "anyOf": [
             {
@@ -906,6 +1101,32 @@
           "default": null,
           "description": "Secret containing the TLS certificate/key for the gRPC router endpoints",
           "title": "Routercertsecret"
+        },
+        "controllerCertSecretOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override controller cert secret string that can contain Go template expressions",
+          "title": "Controllercertsecretoverride"
+        },
+        "routerCertSecretOverride": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Override router cert secret string that can contain Go template expressions",
+          "title": "Routercertsecretoverride"
         },
         "port": {
           "anyOf": [
@@ -1018,6 +1239,19 @@
       "description": "Namespace where the controller will be deployed, defaults to global.namespace",
       "title": "Namespace"
     },
+    "namespaceOverride": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override namespace string that can contain Go template expressions",
+      "title": "Namespaceoverride"
+    },
     "image": {
       "description": "Image for the controller",
       "title": "Image",
@@ -1036,10 +1270,186 @@
       "description": "Image tag for the controller",
       "title": "Tag"
     },
+    "imageOverride": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override image string that can contain Go template expressions",
+      "title": "Imageoverride"
+    },
+    "tagOverride": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Override tag string that can contain Go template expressions",
+      "title": "Tagoverride"
+    },
     "imagePullPolicy": {
       "description": "Image pull policy for the controller",
       "title": "Imagepullpolicy",
       "type": "string"
+    },
+    "commonLabels": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": {},
+      "description": "Add labels to all the deployed resources",
+      "title": "Commonlabels"
+    },
+    "commonAnnotations": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": {},
+      "description": "Add annotations to all the deployed resources (value evaluated as a template)",
+      "title": "Commonannotations"
+    },
+    "extraEnvVars": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": [],
+      "description": "Array with extra environment variables to add to jumpstarter-controller containers",
+      "title": "Extraenvvars"
+    },
+    "extraEnvVarsCM": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Name of existing ConfigMap containing extra env vars for jumpstarter-controller containers",
+      "title": "Extraenvvarscm"
+    },
+    "extraEnvVarsSecret": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Name of existing Secret containing extra env vars for jumpstarter-controller containers",
+      "title": "Extraenvvarssecret"
+    },
+    "sidecars": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": [],
+      "description": "Add additional sidecar containers to the jumpstarter-controller pod(s)",
+      "title": "Sidecars"
+    },
+    "extraVolumes": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": [],
+      "description": "Optionally specify extra list of additional volumes for the jumpstarter-controller pod(s)",
+      "title": "Extravolumes"
+    },
+    "extraVolumeMounts": {
+      "anyOf": [
+        {
+          "items": {},
+          "type": "array"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": [],
+      "description": "Optionally specify extra list of additional volumeMounts for the jumpstarter-controller container(s)",
+      "title": "Extravolumemounts"
+    },
+    "podLabels": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": {},
+      "description": "Extra labels for jumpstarter-controller pods",
+      "title": "Podlabels"
+    },
+    "podAnnotations": {
+      "anyOf": [
+        {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": {},
+      "description": "Annotations for jumpstarter-controller pods (value evaluated as a template)",
+      "title": "Podannotations"
+    },
+    "router": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Router"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Router-specific configurations"
     },
     "global": {
       "anyOf": [

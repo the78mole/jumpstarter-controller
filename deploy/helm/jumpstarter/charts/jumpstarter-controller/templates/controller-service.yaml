@@ -4,8 +4,16 @@ metadata:
   labels:
     control-plane: controller-manager
     app.kubernetes.io/name: jumpstarter-controller
+    {{- with .Values.commonLabels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
   name: jumpstarter-grpc
-  namespace: {{ default .Release.Namespace .Values.namespace }}
+  namespace: {{ include "jumpstarter.namespace" . }}
+  {{- $annotations := include "jumpstarter.annotations" . }}
+  {{- if $annotations }}
+  annotations:
+  {{- $annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{ if .Values.grpc.nodeport.enabled }}
   type: NodePort
